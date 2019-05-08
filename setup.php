@@ -41,6 +41,17 @@
                 FOREIGN KEY(lang_id) REFERENCES languages(id)
                     ON UPDATE CASCADE ON DELETE NO ACTION
                 ");
+		  
+		  createTable("friends", 
+		      "id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+                member_id INT UNSIGNED NOT NULL,
+                friend_id INT UNSIGNED NOT NULL,
+                PRIMARY KEY(id),
+                FOREIGN KEY(member_id) REFERENCES members(id)
+                    ON UPDATE CASCADE ON DELETE NO ACTION,
+                FOREIGN KEY(friend_id) REFERENCES members(id)
+                    ON UPDATE CASCADE ON DELETE NO ACTION
+                ");
 		?>
 		<br> ... done.
 	</body>

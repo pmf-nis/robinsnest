@@ -64,7 +64,7 @@ if(isset($_SESSION['user']))
 		?>
 			<ul class='menu'>
 				<li>
-					<a href="members.php?id=$id">Home</a>
+					<a href="members.php?id=<?php echo $id?>">Home</a>
 				</li>
 				<li>
 					<a href="members.php">Members</a>
