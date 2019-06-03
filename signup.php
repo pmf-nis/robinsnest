@@ -39,12 +39,82 @@
 		<form action="signup.php" method="post">
 			<span class="error"><?php echo $error; ?></span>
 			<span class="fieldname">Username: </span>
-			<input type="text" name="user" value="">
+			<input type="text" name="user" value="" id="user">
+			<span id="info"></span>
 			<br>
 			<span class="fieldname">Password:</span>
 			<input type="password" name="pass" value="">
 			<br>
 			<input type="submit" value="Sign up">
 		</form>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+		<script type="text/javascript">
+			/*
+			var userInput = document.getElementById("user");
+			userInput.addEventListener("blur", function() {
+				var username = userInput.value;
+
+				if(username == "")
+				{
+					document.getElementById("info").innerHTML = "";
+					return;
+				}
+				
+				var request = ajaxRequest();
+				request.open("POST", "checkuser.php", true);
+				request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				request.onreadystatechange = function() {
+					if(this.readyState == 4 && this.status == 200)
+					{
+						if(this.responseText != null)
+						{
+							document.getElementById("info").innerHTML = this.responseText;
+						}
+					}
+				};
+				request.send("username=" + username);
+			});
+			*/
+
+			$("#user").blur(function() {
+				var username = $("#user").val();
+				if(username == "") {
+					$("#info").html("");
+					return;
+				}
+				$.ajax({
+					method : "POST",
+					url : "checkuser.php",
+					data : {
+						'username' : username
+					},
+					success : function(result) {
+						$("#info").html(result);
+					}
+				});
+			});
+
+			function ajaxRequest() 
+			{
+				try {
+					var request = new XMLHttpRequest(); // novi browseri
+				}
+				catch(e1) {
+					try {
+						request = new ActiveXObject("Maxm12.XMLHTTP"); // IE6
+					}
+					catch(e2) {
+						try {
+							request = new ActiveXObject("Microsoft.XMLHTTP"); // IE...
+						}
+						catch(e3) {
+							request = false;
+						}	
+					}				
+				}
+				return request;
+			}
+				
+		</script>
 	</body>
 </html>

@@ -28,6 +28,7 @@ if(isset($_GET['id']))
     die("</div></body></html>");
 }
 
+/*
 if(isset($_GET['add'])) 
 {
     $add = $connection->real_escape_string($_GET['add']);
@@ -39,6 +40,7 @@ if(isset($_GET['add']))
             VALUES ($id, $add)");
     }
 }
+*/
 
 if(isset($_GET['drop']))
 {
@@ -56,7 +58,7 @@ while($row = $result->fetch_assoc())
     {
         continue;
     }
-    echo "<li><a href='members.php?id=" . $row['id'] 
+    echo "<li id='" . $row['id'] . "'><a href='members.php?id=" . $row['id'] 
         . "'>" . $row['user'] . "</a>";
     
     $result1 = 
@@ -81,15 +83,61 @@ while($row = $result->fetch_assoc())
     }
     
     if(!$t2) {
-        echo " [<a href='members.php?add=" 
-                . $row['id'] . "'>$follow</a>]";
+        echo " [<a class='add' myid='$id' friendid='" . $row['id'] . "'  
+            href='members.php?add=" . $row['id'] . "'>
+            $follow</a>]";
     }
     else {
-        echo " [<a href='members.php?drop="
+        echo " [<a class='drop' href='members.php?drop="
                 . $row['id'] . "'>drop</a>]";
     }
 }
 ?>
+
+	<script type="text/javascript">
+		var linksAdd = document.getElementsByClassName('add');
+		for(var i = 0; i < linksAdd.length; i++)
+		{
+			linksAdd[i].addEventListener("click", function(event) {
+				event.preventDefault();
+				var myid = this.getAttribute('myid');
+				var friendid = this.getAttribute('friendid');
+				var request = ajaxRequest();
+				request.open("POST", "manage_friends.php", true);
+				request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				request.onreadystatechange = function()
+				{
+					if(this.readyState == 4 && this.status == 200) {
+						if(this.responseText != null) {
+							document.getElementById(friendid).innerHTML = this.responseText;
+						}
+					} 
+				}
+				request.send("action=add&member_id=" + myid + "&friend_id=" + friendid);
+			});
+		}
+	
+    	function ajaxRequest() 
+    	{
+    		try {
+    			var request = new XMLHttpRequest(); // novi browseri
+    		}
+    		catch(e1) {
+    			try {
+    				request = new ActiveXObject("Maxm12.XMLHTTP"); // IE6
+    			}
+    			catch(e2) {
+    				try {
+    					request = new ActiveXObject("Microsoft.XMLHTTP"); // IE...
+    				}
+    				catch(e3) {
+    					request = false;
+    				}	
+    			}				
+    		}
+    		return request;
+    	}
+	</script>
 
 	</ul></div>
 	</body>

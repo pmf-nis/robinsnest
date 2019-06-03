@@ -4,9 +4,22 @@
 	</head>
 	
 	<body>
-		<?php
-		  require_once 'functions.php';
-		  
+	<?php
+	  require_once 'functions.php';
+	  
+	  require_once 'Role.php';
+	  require_once 'PrivilegedMember.php';
+	  
+	  $ok = false;
+	  session_start();
+	  if(isset($_SESSION['user'])) {
+	      $member = PrivilegedMember::getByUsername($_SESSION['user']);
+	      if($member && $member->hasPrivilege("Run SQL")) {
+	          $ok = true;
+	      }
+	  }
+	  
+	  if($ok) {
 		  createTable("members", 
 		      "id INT UNSIGNED AUTO_INCREMENT,
                 user VARCHAR(16) NOT NULL,
@@ -52,7 +65,46 @@
                 FOREIGN KEY(friend_id) REFERENCES members(id)
                     ON UPDATE CASCADE ON DELETE NO ACTION
                 ");
+		  
+		  createTable("roles", 
+		      "id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+                role_name VARCHAR(50) NOT NULL,
+                PRIMARY KEY(id)");
+		  
+		  createTable("permissions", 
+		      "id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+                perm_name VARCHAR(50) NOT NULL,
+                PRIMARY KEY(id)");
+		  
+		  createTable("role_perm", 
+		      "id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+                role_id INT UNSIGNED NOT NULL,
+                perm_id INT UNSIGNED NOT NULL,
+                PRIMARY KEY(id),
+                FOREIGN KEY(role_id) REFERENCES roles(id)
+                    ON UPDATE CASCADE ON DELETE NO ACTION,
+                FOREIGN KEY(perm_id) REFERENCES permissions(id)
+                    ON UPDATE CASCADE ON DELETE NO ACTION
+                ");
+		  
+		  createTable("member_role",
+		      "id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+                member_id INT UNSIGNED NOT NULL,
+                role_id INT UNSIGNED NOT NULL,
+                PRIMARY KEY(id),
+                FOREIGN KEY(member_id) REFERENCES members(id)
+                    ON UPDATE CASCADE ON DELETE NO ACTION,
+                FOREIGN KEY(role_id) REFERENCES roles(id)
+                    ON UPDATE CASCADE ON DELETE NO ACTION
+                ");
 		?>
 		<br> ... done.
+		<?php 
+	  }
+	  else {
+	      echo "You are not authorized to run this page!";
+	  }
+	  
+		?>
 	</body>
 </html>
