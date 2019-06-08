@@ -97,6 +97,20 @@
                 FOREIGN KEY(role_id) REFERENCES roles(id)
                     ON UPDATE CASCADE ON DELETE NO ACTION
                 ");
+		  
+		  createTable("messages",
+		      "id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+                auth_id INT UNSIGNED NOT NULL,
+                recip_id INT UNSIGNED NOT NULL,
+                pm CHAR(1),
+                time INT UNSIGNED,
+                message VARCHAR(4096) NOT NULL,
+                PRIMARY KEY(id),
+                FOREIGN KEY(auth_id) REFERENCES members(id)
+                    ON UPDATE CASCADE ON DELETE NO ACTION,
+                FOREIGN KEY(recip_id) REFERENCES members(id)
+                    ON UPDATE CASCADE ON DELETE NO ACTION
+                ");
 		?>
 		<br> ... done.
 		<?php 
